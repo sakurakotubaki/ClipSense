@@ -6,6 +6,8 @@
 import Foundation
 
 struct ClipboardSecurityFilter {
+    nonisolated init() {}
+
     func shouldStore(_ content: String) -> Bool {
         let trimmed = content.trimmingCharacters(in: .whitespacesAndNewlines)
 
