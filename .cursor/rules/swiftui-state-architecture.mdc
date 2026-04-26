@@ -1,0 +1,44 @@
+---
+description: SwiftUI state uses @Observable, MV architecture, Swift Concurrency, and Logger instead of print
+globs: "**/*.swift"
+alwaysApply: false
+---
+
+# SwiftUI, State Management, and Architecture
+
+## State Management
+
+- Required: declare reference state with Observation `@Observable`.
+- Use `@Bindable` only when a View needs bindings into an `@Observable` model.
+- Do not add new `ObservableObject`, `@ObservedObject`, `@StateObject`, or `@Published` code.
+
+```swift
+// Bad
+final class Store: ObservableObject {
+    @Published var count = 0
+}
+
+// Good
+@Observable
+final class Store {
+    var count = 0
+}
+```
+
+## Async Work
+
+- Required: use Swift Concurrency (`async` / `await`, `Task`, `actor`, `AsyncSequence`) for asynchronous work.
+- Avoid callback-heavy designs and manual thread switching when concurrency primitives fit.
+
+## Architecture
+
+- Keep the app in a simple MV shape.
+- Put domain and screen state in `@Observable` Model types.
+- Do not create a ViewModel layer for new code.
+- Views should render state and bridge user actions to Model methods.
+
+## Logging and Lint
+
+- Do not use `print`.
+- Use `os.Logger` for debug and production logging.
+- SwiftLint configuration lives in `.swiftlint.yml`.

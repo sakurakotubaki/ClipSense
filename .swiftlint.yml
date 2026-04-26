@@ -1,0 +1,31 @@
+disabled_rules:
+  - trailing_comma
+
+opt_in_rules:
+  - empty_count
+  - fatal_error_message
+  - first_where
+  - sorted_imports
+
+excluded:
+  - ClipSense.xcodeproj
+
+line_length:
+  warning: 140
+  error: 180
+
+identifier_name:
+  min_length:
+    warning: 2
+
+custom_rules:
+  no_print:
+    name: "No print"
+    regex: "\\bprint\\s*\\("
+    message: "Use os.Logger instead of print."
+    severity: error
+  no_observable_object:
+    name: "No ObservableObject"
+    regex: "\\bObservableObject\\b|@ObservedObject\\b|@StateObject\\b|@Published\\b"
+    message: "Use Observation @Observable and @Bindable instead."
+    severity: error

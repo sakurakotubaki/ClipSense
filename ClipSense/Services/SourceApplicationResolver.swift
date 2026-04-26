@@ -1,0 +1,13 @@
+//
+//  SourceApplicationResolver.swift
+//  ClipSense
+//
+
+import AppKit
+import Foundation
+
+struct SourceApplicationResolver {
+    func frontmostApplicationName() -> String? {
+        NSWorkspace.shared.frontmostApplication?.localizedName
+    }
+}

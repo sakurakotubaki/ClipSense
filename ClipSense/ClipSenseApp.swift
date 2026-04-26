@@ -2,16 +2,19 @@
 //  ClipSenseApp.swift
 //  ClipSense
 //
-//  Created by 橋本純一 on 2026/04/26.
-//
 
 import SwiftUI
+import SwiftData
 
 @main
 struct ClipSenseApp: App {
+    @State private var appModel = ClipSenseAppModel()
+
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        MenuBarExtra("ClipSense", systemImage: "doc.on.clipboard") {
+            ClipboardHistoryView(model: appModel.history)
+                .modelContainer(appModel.modelContainer)
         }
+        .menuBarExtraStyle(.window)
     }
 }
