@@ -11,10 +11,22 @@ import SwiftData
 final class ClipboardRepository {
     private let context: ModelContext
     private let filter: ClipboardSecurityFilter
+    private let soundPlayer: ClipboardSoundPlayer
 
-    init(context: ModelContext, filter: ClipboardSecurityFilter = ClipboardSecurityFilter()) {
+    init(context: ModelContext) {
+        self.context = context
+        self.filter = ClipboardSecurityFilter()
+        self.soundPlayer = ClipboardSoundPlayer()
+    }
+
+    init(
+        context: ModelContext,
+        filter: ClipboardSecurityFilter,
+        soundPlayer: ClipboardSoundPlayer
+    ) {
         self.context = context
         self.filter = filter
+        self.soundPlayer = soundPlayer
     }
 
     @discardableResult
@@ -34,6 +46,7 @@ final class ClipboardRepository {
             existing.sourceAppName = sourceAppName
             existing.characterCount = normalizedContent.count
             saveContext()
+            soundPlayer.playCopySound()
             return existing
         }
 
@@ -44,6 +57,7 @@ final class ClipboardRepository {
         )
         context.insert(item)
         saveContext()
+        soundPlayer.playCopySound()
         return item
     }
 
@@ -53,6 +67,7 @@ final class ClipboardRepository {
         pasteboard.setString(item.content, forType: .string)
         item.updatedAt = .now
         saveContext()
+        soundPlayer.playCopySound()
     }
 
     func togglePinned(_ item: ClipboardItem) {

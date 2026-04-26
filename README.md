@@ -6,7 +6,7 @@ It runs from the menu bar, stays out of the Dock, watches text clipboard changes
 
 ## Features
 
-- Menu bar resident macOS app
+- Menu bar resident macOS app using `NSStatusItem` and `NSPopover`
 - Dock-hidden app behavior via `LSUIElement`
 - Text clipboard monitoring with `NSPasteboard`
 - Local persistence with SwiftData
@@ -16,7 +16,8 @@ It runs from the menu bar, stays out of the Dock, watches text clipboard changes
 - Click or press Return to copy a selected item back to the clipboard
 - Keyboard navigation for history selection
 - Security filter for sensitive-looking clipboard content
-- Global hot key registration for `Command + Shift + V`
+- Global hot key registration for opening the clipboard history with `Command + Shift + V`
+- Copy feedback sound using `ClipSense/BGM/cursor-bgm.mp3`
 
 ## Security Filtering
 
@@ -39,7 +40,9 @@ ClipSense uses a simple Model-View architecture:
 - SwiftUI views render state and forward user actions.
 - `ClipboardRepository` owns SwiftData mutations and pasteboard write-back.
 - `PasteboardMonitor` watches `NSPasteboard` with Swift Concurrency.
+- `StatusBarController` owns the menu bar item and popover presentation.
 - `GlobalHotKeyManager` registers the default global shortcut with Carbon hot key APIs.
+- `ClipboardSoundPlayer` plays bundled copy feedback audio after a successful clipboard save or recopy.
 
 The project avoids new `ObservableObject`, `@StateObject`, `@ObservedObject`, and `@Published` code. New state should use Swift Observation with `@Observable` and `@Bindable`.
 
@@ -51,7 +54,7 @@ The default shortcut is:
 Command + Shift + V
 ```
 
-This shortcut is registered globally by `GlobalHotKeyManager`. SwiftUI `MenuBarExtra` has limited public API for programmatic popover opening, so the code is structured to keep the hot key event separate from presentation. If full shortcut-driven popover opening is required, the presentation layer can be moved to `NSStatusItem` + `NSPopover` while reusing the existing SwiftUI views and models.
+This shortcut is registered globally by `GlobalHotKeyManager`. When pressed, ClipSense toggles the clipboard history popover from the menu bar using `NSStatusItem` and `NSPopover`.
 
 ## Development
 
@@ -85,6 +88,10 @@ ClipSense/
     ClipboardSecurityFilter.swift
     SourceApplicationResolver.swift
     GlobalHotKeyManager.swift
+    ClipboardSoundPlayer.swift
+    StatusBarController.swift
+  BGM/
+    cursor-bgm.mp3
   Views/
     ClipboardHistoryView.swift
     ClipboardItemRowView.swift
