@@ -16,6 +16,12 @@ final class ClipboardItem {
     var sourceAppName: String?
     var contentType: String
     var characterCount: Int
+    var imageFileName: String?
+    var imageWidth: Double?
+    var imageHeight: Double?
+    var imageByteSize: Int?
+    var imageHash: String?
+    var originalFileName: String?
 
     init(
         id: UUID = UUID(),
@@ -24,7 +30,13 @@ final class ClipboardItem {
         updatedAt: Date = .now,
         isPinned: Bool = false,
         sourceAppName: String? = nil,
-        contentType: String = ClipboardItem.plainTextContentType
+        contentType: String = ClipboardItem.plainTextContentType,
+        imageFileName: String? = nil,
+        imageWidth: Double? = nil,
+        imageHeight: Double? = nil,
+        imageByteSize: Int? = nil,
+        imageHash: String? = nil,
+        originalFileName: String? = nil
     ) {
         self.id = id
         self.content = content
@@ -34,9 +46,20 @@ final class ClipboardItem {
         self.sourceAppName = sourceAppName
         self.contentType = contentType
         self.characterCount = content.count
+        self.imageFileName = imageFileName
+        self.imageWidth = imageWidth
+        self.imageHeight = imageHeight
+        self.imageByteSize = imageByteSize
+        self.imageHash = imageHash
+        self.originalFileName = originalFileName
     }
 }
 
 extension ClipboardItem {
     static let plainTextContentType = "public.utf8-plain-text"
+    static let pngContentType = "public.png"
+
+    var isImage: Bool {
+        contentType == Self.pngContentType && imageFileName != nil
+    }
 }

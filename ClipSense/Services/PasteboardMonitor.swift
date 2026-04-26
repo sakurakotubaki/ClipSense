@@ -11,17 +11,20 @@ final class PasteboardMonitor {
     private let pasteboard: NSPasteboard
     private let repository: ClipboardRepository
     private let sourceApplicationResolver: SourceApplicationResolver
+    private let imageReader: PasteboardImageReader
     private var monitoringTask: Task<Void, Never>?
     private var lastChangeCount: Int
 
     init(
         pasteboard: NSPasteboard = .general,
         repository: ClipboardRepository,
-        sourceApplicationResolver: SourceApplicationResolver = SourceApplicationResolver()
+        sourceApplicationResolver: SourceApplicationResolver = SourceApplicationResolver(),
+        imageReader: PasteboardImageReader = PasteboardImageReader()
     ) {
         self.pasteboard = pasteboard
         self.repository = repository
         self.sourceApplicationResolver = sourceApplicationResolver
+        self.imageReader = imageReader
         self.lastChangeCount = pasteboard.changeCount
     }
 
@@ -55,13 +58,20 @@ final class PasteboardMonitor {
 
         lastChangeCount = currentChangeCount
 
+        let sourceAppName = sourceApplicationResolver.frontmostApplicationName()
+
+        if let imagePayload = imageReader.imagePayload(from: pasteboard) {
+            repository.saveImageIfAllowed(imagePayload, sourceAppName: sourceAppName)
+            return
+        }
+
         guard let content = pasteboard.string(forType: .string) else {
             return
         }
 
         repository.saveIfAllowed(
             content: content,
-            sourceAppName: sourceApplicationResolver.frontmostApplicationName()
+            sourceAppName: sourceAppName
         )
     }
 

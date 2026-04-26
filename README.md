@@ -9,7 +9,9 @@ It runs from the menu bar, stays out of the Dock, watches text clipboard changes
 - Menu bar resident macOS app using `NSStatusItem` and `NSPopover`
 - Dock-hidden app behavior via `LSUIElement`
 - Text clipboard monitoring with `NSPasteboard`
+- Image clipboard monitoring for copied screenshots and image files
 - Local persistence with SwiftData
+- PNG image storage in Application Support with SwiftData metadata
 - Searchable clipboard history
 - Pinned items shown above recent history
 - Copy, pin, unpin, and delete actions per item
@@ -39,6 +41,7 @@ ClipSense uses a simple Model-View architecture:
 - `@Observable` model types own app and screen state.
 - SwiftUI views render state and forward user actions.
 - `ClipboardRepository` owns SwiftData mutations and pasteboard write-back.
+- `ClipboardImageStore` writes copied images as PNG files under Application Support and keeps only metadata in SwiftData.
 - `PasteboardMonitor` watches `NSPasteboard` with Swift Concurrency.
 - `StatusBarController` owns the menu bar item and popover presentation.
 - `GlobalHotKeyManager` registers the default global shortcut with Carbon hot key APIs.
@@ -90,6 +93,8 @@ ClipSense/
     GlobalHotKeyManager.swift
     ClipboardSoundPlayer.swift
     StatusBarController.swift
+    ClipboardImageStore.swift
+    PasteboardImageReader.swift
   BGM/
     cursor-bgm.mp3
   Views/

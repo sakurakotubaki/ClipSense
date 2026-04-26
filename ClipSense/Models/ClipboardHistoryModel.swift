@@ -35,6 +35,8 @@ final class ClipboardHistoryModel {
         return sortedItems.filter { item in
             item.content.localizedCaseInsensitiveContains(query)
             || item.sourceAppName?.localizedCaseInsensitiveContains(query) == true
+            || item.originalFileName?.localizedCaseInsensitiveContains(query) == true
+            || (item.isImage && "image".localizedCaseInsensitiveContains(query))
         }
     }
 
